@@ -42,7 +42,7 @@ export const allPosts = create((set) => (
                     post: state.post.filter((post) => {
                         post._id != postUpdate._id;
                     }),
-                    post: [...state.post, postUpdate ]
+                    post: [...state.post, postUpdate]
                 }
             ))
         }
