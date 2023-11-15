@@ -18,16 +18,24 @@ export const allUsers = create((set) => (
 export const user = create((set) => (
     {
         profileData : {},
+        otherProfile: {},
         storeProfile : (profile) => {
             set ((state) => (
                 {
-                    profile: profile
+                    profileData: profile
+                }
+            ))
+        },
+        storeOther :(profile) => {
+            set ((state) => (
+                {
+                    profileData: profile
                 }
             ))
         }
-
     }
 ))
+
 
 export const allPosts = create((set) => (
     {
@@ -39,10 +47,12 @@ export const allPosts = create((set) => (
         updatePosts: (postUpdate) =>{
             set((state) => (
                 {
-                    post: state.post.filter((post) => {
-                        post._id != postUpdate._id;
-                    }),
-                    post: [...state.post, postUpdate]
+                    post: state.post.map((post) => {
+                        if(post._id === postUpdate._id){
+                           return  post = postUpdate
+                        }
+                        return  post;
+                    })
                 }
             ))
         }

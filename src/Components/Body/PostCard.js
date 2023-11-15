@@ -1,7 +1,9 @@
 import React, { useContext, useState } from "react";
-import { SERVER_URL, postEndPoints } from "../../apihandler/apiList";
+import {  postEndPoints } from "../../apihandler/apiList";
 import apicall from "../../apihandler/apiCall";
 import AppContext from "../../Context/AppContex";
+import { allPosts } from "../../zustand/Store";
+import { NavLink } from "react-router-dom";
 
 
 const PostCard = (props) => {
@@ -10,6 +12,7 @@ const PostCard = (props) => {
     const [comment, setComment] = useState("");
     const index = props.index;
     const post = props.post;
+    const updatePosts = allPosts((state) => state.updatePosts);
 
 
     const commentRequest = async (event) => {
@@ -45,13 +48,14 @@ const PostCard = (props) => {
             data,
             headers
         ).then(response => {
-            console.log(response);
+            updatePosts(response);
             setComment("");
             setCommentTogle(true);
 
         }).catch(error => {
             setAuthenticated(false);
         })
+        
         
 
     }
@@ -62,7 +66,10 @@ const PostCard = (props) => {
 
                 <div className="py-3 px-3 flex justify-between">
                     <div className="text-2xl font-bold">
-                        {post.userId}
+                        <NavLink to={`/profile/${post.userId}`}>
+                            {post.userId}
+                        </NavLink>
+                        
                     </div>
                     <div>
                         ---
@@ -90,6 +97,7 @@ const PostCard = (props) => {
                     <form onSubmit={commentRequest}>
                         <div className="flex flex-row justify-center">
                             <input onChange={(event) => { setComment(event.target.value) }}
+                                value={comment}
                                 className='px-2 text-xl w-10/12 border-gray-200 border-2 border-r-0' placeholder="write..." />
                             <div className="px-1 text-xl bg-green-400 text-white border-gray-200 border-2 border-l-0">
                                 <button type="submit">
@@ -103,7 +111,12 @@ const PostCard = (props) => {
                     {post.comments.map((comment) => {
                         return (<>
                             <div className="mx-5 px-3 py-1 flex flex-row w-10/12 gap-3 m-1 border-gray-200 border-2 ">
-                                <p className="font-semibold">{comment.commentedBY}</p>
+                                <p className="font-semibold">
+                                    <NavLink to={`/profile/${comment.commentedBY}`}>
+                                        {comment.commentedBY}
+                                    </NavLink>
+                                    
+                                </p>
                                 <p>{comment.comment}</p>
                             </div>
                         </>)

@@ -4,9 +4,6 @@ import Header from './Components/Header/Header';
 import Footer from './Components/Footer/Footer';
 import Body from './Components/Body/Body';
 import Login from './Components/Login/Login';
-import { alerts } from "./zustand/Store";
-
-
 
 const App = () => {
     const { authenticated } = useContext(AppContext);

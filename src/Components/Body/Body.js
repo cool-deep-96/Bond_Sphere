@@ -10,7 +10,7 @@ const Body = () => {
         <div className=" pt-5 px-5">
             <Routes>
                 <Route path = '/' element = {<Post/>}/>
-                <Route path='/profile' element={<Profile/>}/>
+                <Route path='/profile/:userId' element={<Profile /> }/>
             </Routes>
 
         </div>

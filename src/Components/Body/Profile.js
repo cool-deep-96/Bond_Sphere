@@ -1,22 +1,62 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import profileImg from "../../assets/profile3.jpg";
-import { user } from "../../zustand/Store";
+import AppContext from "../../Context/AppContex";
+import { userEndPoints } from "../../apihandler/apiList";
+import apicall from "../../apihandler/apiCall";
+import { useParams } from "react-router-dom";
 
 
-const Profile = () => {
-    const profile = user((state) => state.profile);
-    console.log(profile);
+const Profile = (props) => {
+    const { userId } = useParams();
+    console.log(userId);
+    const { setAuthenticated } = useContext(AppContext);
+    const [user, setUser] = useState([]);
+    
+    const userRequest = async () => {
+        
+        let headers = null;
+        if (localStorage.getItem("token")) {
+            if (headers) {
+                headers += {
+                    Authorization: localStorage.getItem("token"),
+                };
+            } else {
+                headers = {
+                    Authorization: localStorage.getItem("token"),
+                };
+            }
+        }
+        const method = "GET";
+        const url = userEndPoints.USER_REQUEST + userId;
+        headers = headers;
+        const data = null;
+        await apicall(
+            method,
+            url,
+            data,
+            headers
+        ).then(response => {
+            setUser(response[0]);
+            console.log(response[0]);
+
+        }).catch(error => {
+            console.log(error)
+            setAuthenticated(false);
+        })
+    }
+
+    // userRequest();
 
 
     return (
         <>
             <div className="flex flex-col">
                 <div className="flex flex-row ">
-                    <div classname="">
-                        <img src={profileImg} className="h-28 w-28"></img>
+                    <div className="">
+                        <img src={user.urlToImg} className="h-28 w-28"></img>
                     </div>
                     <div className="px-5 py-2 flex flex-col">
-                        <p className="text-2xl font-bold">kuldeep kumar</p>
+                        <p className="text-2xl font-bold">{user.userId}</p>
                         <p className="text-lg pt-3 w-8/12 ">this is bio sectionjsldkjfkd</p>
                     </div>
                 </div>
@@ -28,13 +68,13 @@ const Profile = () => {
                         </button>
                     </div>
                     <div className="flex flex-col ">
-                    <p className="text-center font-bold">375</p>
+                    <p className="text-center font-bold">{user.followers? user.followers.length:"0"}</p>
                         <button className='pb-3 px-3   font-semibold w-full'>
                             followers
                         </button>
                     </div>
                     <div className="flex flex-col ">
-                    <p className="text-center font-bold">239</p>
+                    <p className="text-center font-bold">{user.followings? user.followings.length:"0"}</p>
                         <button className='pb-3 px-3  font-semibold w-full'>
                         following
                         </button>

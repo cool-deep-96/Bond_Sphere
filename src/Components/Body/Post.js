@@ -7,8 +7,6 @@ import PostCard from "./PostCard";
 const Post = () => {
 
     const posts = allPosts((state) => state.post);
-
-
     return (
         <>
 

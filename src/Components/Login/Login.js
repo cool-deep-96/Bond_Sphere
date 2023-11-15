@@ -32,7 +32,6 @@ const Login = () => {
             data,
             headers
         ).then(response => {
-            console.log(response.token)
             localStorage.setItem('token', response.token);
             getAllPosts();
             

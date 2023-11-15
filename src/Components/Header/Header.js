@@ -6,42 +6,42 @@ import { userEndPoints } from '../../apihandler/apiList';
 
 
 const Header = () => {
+  const profileData = user((state) => state.profileData);
+    // const storeProfile = user((state) => state.storeProfile);
 
-    const storeProfile = user((state) => state.storeProfile);
+    // const getUser = async () => {
+    //     let headers = null;
+    //     if (localStorage.getItem("token")) {
+    //         if (headers) {
+    //           headers += {
+    //             Authorization: localStorage.getItem("token"),
+    //           };
+    //         } else {
+    //           headers = {
+    //             Authorization: localStorage.getItem("token"),
+    //           };
+    //         }
+    //       }
 
-    const getUser = async () => {
-        let headers = null;
-        if (localStorage.getItem("token")) {
-            if (headers) {
-              headers += {
-                Authorization: localStorage.getItem("token"),
-              };
-            } else {
-              headers = {
-                Authorization: localStorage.getItem("token"),
-              };
-            }
-          }
+    //     const method = 'GET'
+    //     const url = userEndPoints.GET_USER+"/";
+    //     const data = null
 
-        const method = 'GET'
-        const url = userEndPoints.GET_USER+"/";
-        const data = null
-
-        await apicall(
-            method,
-            url,
-            data,
-            headers
-        ).then(response => {
-            storePosts(response);
-            console.log(response);
-            setAuthenticated(true);
+    //     await apicall(
+    //         method,
+    //         url,
+    //         data,
+    //         headers
+    //     ).then(response => {
+    //         storePosts(response);
+    //         console.log(response);
+    //         setAuthenticated(true);
             
             
-        }).catch(error => {
-            setAuthenticated(false);
-        })
-    }
+    //     }).catch(error => {
+    //         setAuthenticated(false);
+    //     })
+    // }
     
     
     return (
@@ -51,8 +51,8 @@ const Header = () => {
                 BondSphere
             </div>
             <div>
-                <NavLink to='/profile'>
-                <img src={profileImg} className='h-12 w-12 rounded-full'/>
+                <NavLink to={`/profile/${profileData.userId}`}>
+                <img src={profileData.urlToImg} className='h-12 w-12 rounded-full'/>
                 </NavLink>
             </div>
 

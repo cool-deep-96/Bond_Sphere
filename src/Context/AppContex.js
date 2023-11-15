@@ -1,7 +1,7 @@
 import React, { createContext, useEffect, useState } from "react";
 import apicall from "../apihandler/apiCall";
 import { userEndPoints, postEndPoints } from "../apihandler/apiList";
-import { allPosts } from "../zustand/Store";
+import { allPosts, user } from "../zustand/Store";
 
 
 const AppContext = createContext();
@@ -9,6 +9,7 @@ const AppContext = createContext();
 const AppContextProvider = ({ children }) => {
     const [authenticated, setAuthenticated] = useState();
     const storePosts = allPosts((state) => state.storePosts);
+    const storeProfile = user((state) => state.storeProfile);
 
     const getAllPosts = async () => {
         let headers = null;
@@ -23,7 +24,6 @@ const AppContextProvider = ({ children }) => {
               };
             }
           }
-
         const method = 'GET'
         const url = postEndPoints.GET_REQUEST;
         const data = null
@@ -34,8 +34,8 @@ const AppContextProvider = ({ children }) => {
             data,
             headers
         ).then(response => {
-            storePosts(response);
-            console.log(response);
+            storePosts(response.post);
+            storeProfile(response.user);
             setAuthenticated(true);
             
             
@@ -49,29 +49,10 @@ const AppContextProvider = ({ children }) => {
 
     },[])
 
-
-    // const loginRequest = async () => {
-    //     const method = "POST";
-    //     const url = userEndPoints.LOGIN_REQUEST;
-    //     const data = {
-    //         userId: userId,
-    //         password: password
-    //     }
-    //     const headers = null
-    //     await apicall(
-    //         method,
-    //         url,
-    //         data,
-    //         headers
-    //     )
-
-    // }
-
     const values = {
         authenticated,
         setAuthenticated,
         getAllPosts
-
 
     }
     return (
