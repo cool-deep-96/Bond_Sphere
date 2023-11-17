@@ -9,5 +9,7 @@ export const userEndPoints = {
 
 export const postEndPoints = {
     GET_REQUEST: SERVER_URL+"api/postRoutes/getAllPosts",
-    COMMENT_REQUEST: SERVER_URL+"api/postRoutes/commentpost/"
+    COMMENT_REQUEST: SERVER_URL+"api/postRoutes/commentpost/",
+    LIKE_REQUEST: SERVER_URL+"api/postRoutes/likepost/",
+    CREATE_REQUEST: SERVER_URL+"api/postRoutes/createpost"
 }

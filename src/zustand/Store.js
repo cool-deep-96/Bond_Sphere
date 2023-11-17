@@ -29,7 +29,7 @@ export const user = create((set) => (
         storeOther :(profile) => {
             set ((state) => (
                 {
-                    profileData: profile
+                    otherProfile: profile
                 }
             ))
         }

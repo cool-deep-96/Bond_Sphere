@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import {  postEndPoints } from "../../apihandler/apiList";
 import apicall from "../../apihandler/apiCall";
 import AppContext from "../../Context/AppContex";
-import { allPosts } from "../../zustand/Store";
+import { allPosts, user } from "../../zustand/Store";
 import { NavLink } from "react-router-dom";
 
 
@@ -13,6 +13,7 @@ const PostCard = (props) => {
     const index = props.index;
     const post = props.post;
     const updatePosts = allPosts((state) => state.updatePosts);
+    const profileData = user((state) => state.profileData);
 
 
     const commentRequest = async (event) => {
@@ -60,6 +61,43 @@ const PostCard = (props) => {
 
     }
 
+    const likeRequest = async () => {
+        let headers = null;
+        if (localStorage.getItem("token")) {
+            if (headers) {
+                headers += {
+                    Authorization: localStorage.getItem("token"),
+                };
+            } else {
+                headers = {
+                    Authorization: localStorage.getItem("token"),
+                };
+            }
+        }
+
+        const method = "PUT";
+        const url = postEndPoints.LIKE_REQUEST + post._id;
+        headers = headers;
+        const data = null;
+        
+        console.log(url);
+
+        await apicall(
+            method,
+            url,
+            data,
+            headers
+        ).then(response => {
+            updatePosts(response);
+
+        }).catch(error => {
+            setAuthenticated(false);
+        })
+        
+        
+
+    }
+
     return (
         <>
             <div className="" key={index}>
@@ -81,8 +119,8 @@ const PostCard = (props) => {
                 </div>
                 <p>{post.caption}</p>
                 <div className="flex gap-4 px-3 mt-4 font-semibold">
-                    <button className="">
-                        like
+                    <button className="" onClick={likeRequest}>
+                        {post.likes.some(user => user.userId === profileData.userId)? "liked" : "like"}
                     </button>
                     <button onClick={() => { setCommentTogle(!commentTogle) }}>
                         comments
