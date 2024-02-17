@@ -4,7 +4,7 @@ export const alerts= create ((set) =>(
     {
         message: "",
         setMessage: (message) => {
-            set(() => ({ message : message }))
+            set(() => ({ message : message }));
         }
     }
 ))
@@ -15,24 +15,16 @@ export const allUsers = create((set) => (
     }
 ))
 
-export const user = create((set) => (
+export const useUserStore = create((set) => (
     {
-        profileData : {},
-        otherProfile: {},
+        profile : {},
         storeProfile : (profile) => {
             set ((state) => (
                 {
-                    profileData: profile
+                    profile: profile
                 }
             ))
         },
-        storeOther :(profile) => {
-            set ((state) => (
-                {
-                    otherProfile: profile
-                }
-            ))
-        }
     }
 ))
 
@@ -41,18 +33,16 @@ export const allPosts = create((set) => (
     {
         post : [],
         storePosts : (post) =>{
-            set((state) => ({post : post}))
+            set(() => ({post : post}))
         },
 
         updatePosts: (postUpdate) =>{
             set((state) => (
                 {
-                    post: state.post.map((post) => {
-                        if(post._id === postUpdate._id){
-                           return  post = postUpdate
-                        }
-                        return  post;
-                    })
+                    post : state.post.map((post) => (
+                       post._id === postUpdate._id? postUpdate : post
+
+                    ))
                 }
             ))
         }

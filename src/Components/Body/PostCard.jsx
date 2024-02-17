@@ -1,20 +1,20 @@
-import React, { useContext, useState } from "react";
-import {  postEndPoints } from "../../apihandler/apiList";
+import React, { useState } from "react";
+import { postEndPoints } from "../../apihandler/apiList";
 import apicall from "../../apihandler/apiCall";
-import AppContext from "../../Context/AppContex";
-import { allPosts, user } from "../../zustand/Store";
-import { NavLink } from "react-router-dom";
+import { allPosts  } from "../../zustand/Store";
+import { NavLink, useNavigate } from "react-router-dom";
+import profileImg from '../../assets/profile3.jpeg'
 
 
 const PostCard = (props) => {
-    const { setAuthenticated } = useContext(AppContext);
     const [commentTogle, setCommentTogle] = useState(false);
     const [comment, setComment] = useState("");
-    const index = props.index;
     const post = props.post;
     const updatePosts = allPosts((state) => state.updatePosts);
-    const profileData = user((state) => state.profileData);
-
+    const navigate = useNavigate();
+    const profileData = {
+        userId: localStorage.getItem('userId'),
+        urlToImg: localStorage.getItem('urlToImg')}  
 
     const commentRequest = async (event) => {
         event.preventDefault();
@@ -30,8 +30,8 @@ const PostCard = (props) => {
                 };
             }
         }
-        if(comment === ''){
-            return ;
+        if (comment === '') {
+            return;
         }
 
         const method = "PUT";
@@ -40,24 +40,26 @@ const PostCard = (props) => {
         const data = {
             comment: comment
         };
-        
-        console.log(url);
-
-        await apicall(
-            method,
-            url,
-            data,
-            headers
-        ).then(response => {
+        try {
+            const response = await apicall(
+                method,
+                url,
+                data,
+                headers
+            )
             updatePosts(response);
             setComment("");
             setCommentTogle(true);
 
-        }).catch(error => {
-            setAuthenticated(false);
-        })
-        
-        
+        } catch (error){
+            navigate('/login');
+
+        }
+
+
+
+
+
 
     }
 
@@ -79,57 +81,75 @@ const PostCard = (props) => {
         const url = postEndPoints.LIKE_REQUEST + post._id;
         headers = headers;
         const data = null;
-        
-        console.log(url);
 
-        await apicall(
-            method,
-            url,
-            data,
-            headers
-        ).then(response => {
+        try {
+            const response = await apicall(
+                method,
+                url,
+                data,
+                headers
+            )
             updatePosts(response);
+        
 
-        }).catch(error => {
-            setAuthenticated(false);
-        })
-        
-        
+        } catch (error){
+            navigate('/login');
+
+        }
+
+
 
     }
 
     return (
-        <>
-            <div className="" key={index}>
+        <><div className="min-w-screen lg:flex lg:justify-center mb-5">
+            <div className=" lg:w-2/6 lg:self-place-center">
+
+                <div>
 
                 <div className="py-3 px-3 flex justify-between">
-                    <div className="text-2xl font-bold">
-                        <NavLink to={`/profile/${post.userId}`}>
-                            {post.userId}
+                    <div className="text-2xl font-bold  ">
+                        <NavLink to={`/profile/${post.userObjectId.userId}`}>
+                            <div className="flex gap-2">
+                                {
+
+                                <img src={post.userObjectId.urlToImg || profileImg} className="h-10 w-10 rounded-full"/>
+                                }
+                               <div>{post.userObjectId.userId} </div>
+                            </div>
+                            
                         </NavLink>
-                        
+
                     </div>
                     <div>
                         ---
                     </div>
 
                 </div>
-                <div className="flex  justify-center">
-                    <img className="w-full" src={post.urlToImg}></img>
+                <div className="px-2 ">
+                    <img className="w-full " src={post.urlToImg}></img>
                 </div>
-                <p>{post.caption}</p>
-                <div className="flex gap-4 px-3 mt-4 font-semibold">
-                    <button className="" onClick={likeRequest}>
-                        {post.likes.some(user => user.userId === profileData.userId)? "liked" : "like"}
-                    </button>
-                    <button onClick={() => { setCommentTogle(!commentTogle) }}>
+                <p className="my-3 mx-2 text-xl">{post.caption}</p>
+                <div className="flex gap-4 px-3 mt-4 font-semibold items-center">
+                    <div className="flex flex-col items-center">
+                        {/* <div>{post.likes.length}</div> */}
+                        <button className="text-xl" onClick={likeRequest}>
+                            {post.likes.some(user => user.userId === profileData.userId) ? "Liked" : "Like"}
+                        </button>
+                        
+                    </div>
+                    
+                    <button className="text-xl" onClick={() => { setCommentTogle(!commentTogle) }}>
                         comments
                     </button>
 
                 </div>
-                
+
 
             </div>
+
+
+       
             {
                 commentTogle ? (<>
                     <form onSubmit={commentRequest}>
@@ -144,24 +164,27 @@ const PostCard = (props) => {
                             </div>
                         </div>
                     </form>
-
+                    <div className="max-h-96 overflow-hidden overflow-scroll overflow-x-hidden">
 
                     {post.comments.map((comment) => {
-                        return (<>
-                            <div className="mx-5 px-3 py-1 flex flex-row w-10/12 gap-3 m-1 border-gray-200 border-2 ">
+                        return (
+                            <div key={comment._id} className="mx-5 px-3 py-1 flex flex-row w-10/12 gap-3 m-1 border-gray-200 border-2 ">
                                 <p className="font-semibold">
                                     <NavLink to={`/profile/${comment.commentedBY}`}>
                                         {comment.commentedBY}
                                     </NavLink>
-                                    
+
                                 </p>
                                 <p>{comment.comment}</p>
                             </div>
-                        </>)
+                        )
                     })
                     }
+                    </div>
                 </>) : (<></>)
             }
+            </div>
+         </div>
 
         </>
     )
