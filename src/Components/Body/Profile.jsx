@@ -10,7 +10,7 @@ import { useUserStore } from "../../zustand/Store";
 
 const Profile = () => {
     const profile = useUserStore((state)=>state.profile);
-    console.log(profile.followers);
+    // console.log(profile.followers);
     const profileData = {
                             userId: localStorage.getItem('userId'),
                             urlToImg: localStorage.getItem('urlToImg'),
